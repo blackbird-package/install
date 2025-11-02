@@ -6,74 +6,102 @@ if [[ -z $DISK_BOOOT ]];then
     exit
 fi
 
+sleep 1
+clear
+echo "level 1"
 pvcreate /dev/mapper/proc  &&
 vgcreate proc /dev/mapper/proc &&
 
-
+sleep 1
+clear
+echo "level 2"
 lvcreate -L 10G proc -n root &&
 mkfs.ext4 -b 4096 /dev/proc/root &&
 mount /dev/proc/root /mnt &&
 
-
+sleep 1
+clear
+echo "level 3"
 mkfs.vfat -F32 -S 4096 -n BOOT $DISK_BOOOT &&
 mkdir /mnt/boot &&
 mount -o uid=0,gid=0,fmask=0077,dmask=0077 $DISK_BOOOT /mnt/boot &&
 
- 
+sleep 1
+clear
+echo "level 4"
 lvcreate -L 15G proc -n opts &&
 mkfs.ext4 -b 4096 /dev/proc/opts &&
 mkdir /mnt/opt &&
 mount -o rw,nodev,nosuid,relatime /dev/proc/opts /mnt/opt &&
 
-
+sleep 1
+clear
+echo "level 5"
 lvcreate -L 2G proc -n vars &&
 mkfs.ext4 -b 4096 /dev/proc/vars &&
 mkdir /mnt/var &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vars /mnt/var &&
 
-
+sleep 1
+clear
+echo "level 6"
 lvcreate -L 512M proc -n libs &&
 mkfs.ext4 -b 4096 /dev/proc/libs &&
 mkdir /mnt/var/usr &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/libs /mnt/var/usr &&
 
 
+sleep 1
+clear
+echo "level 7"
 lvcreate -L 512M proc -n game &&
 mkfs.ext4 -b 4096 /dev/proc/game &&
 mkdir /mnt/var/games &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/game /mnt/var/games &&
 
-
+sleep 1
+clear
+echo "level 8"
 lvcreate -L 1G proc -n vlog &&
 mkfs.ext4 -b 4096 /dev/proc/vlog &&
 mkdir /mnt/var/log &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vlog /mnt/var/log &&
 
-
+sleep 1
+clear
+echo "level 9"
 lvcreate -L 256M proc -n vaud &&
 mkfs.ext4 -b 4096 /dev/proc/vaud &&
 mkdir /mnt/var/log/audit &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vaud /mnt/var/log/audit &&
 
-
+sleep 1
+clear
+echo "level 10"
 lvcreate -L 2G proc -n vtmp &&
 mkfs.ext4 -b 4096 /dev/proc/vtmp &&
 mkdir /mnt/var/tmp &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vtmp /mnt/var/tmp &&
 
-
+sleep 1
+clear
+echo "level 11"
 lvcreate -L 2G proc -n vpac &&
 mkfs.ext4 -b 4096 /dev/proc/vpac &&
 mkdir -p /mnt/var/cache/pacman &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vpac /mnt/var/cache/pacman &&
 
-
+sleep 1
+clear
+echo "level 12"
 lvcreate -L 512M proc -n ring &&
 cryptsetup luksFormat --sector-size=4096 /dev/proc/ring &&
 cryptsetup luksOpen /dev/proc/ring proc_keys &&
 mkfs.ext4 -b 4096 /dev/mapper/proc_keys &&
 
-
+sleep 1
+clear
+echo "level 13"
 lvcreate -l100%FREE proc -n docs &&
 mkfs.ext4 -b 4096 /dev/proc/docs &&
 mkdir -p /mnt/srv /mnt/srv/http &&
@@ -81,46 +109,85 @@ mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/docs /mnt/srv/http &&
 
 
 ## app level 1
+sleep 1
+clear
+echo "level 14"
 pacstrap /mnt linux-hardened linux-firmware mkinitcpio base lvm2 btrfs-progs bubblewrap-suid --noconfirm &&
 
 ## app level 2
+sleep 1
+clear
+echo "level 15"
 pacstrap /mnt sudo debugedit fakeroot pkgconf bison gcc pcre flex wget make gcc curl --noconfirm &&
 
 ## app level 3
+sleep 1
+clear
+echo "level 16"
 pacstrap /mnt uwsm hyprland hyprpicker hyprshot hypridle hyprlock hyprpolkitagent xdg-desktop-portal-hyprland qt5-wayland qt6-wayland wl-clipboard cliphist mailcap brightnessctl --noconfirm &&
 
 ## app level 4
+sleep 1
+clear
+echo "level 17"
 pacstrap /mnt mako waybar wofi mpd mpc --noconfirm &&
 
 ## app level 5
+sleep 1
+clear
+echo "level 18"
 pacstrap /mnt pipewire pipewire-pulse pipewire-jack wireplumber pavucontrol --noconfirm &&
 
 ## app level 6
+sleep 1
+clear
+echo "level 19"
 pacstrap /mnt nautilus nautilus-image-converter sushi --noconfirm &&
 
 ## app level 7
+sleep 1
+clear
+echo "level 20"
 pacstrap /mnt ttf-jetbrains-mono-nerd ttf-droid --noconfirm &&
 
 ## app level 8
+sleep 1
+clear
+echo "level 21"
 pacstrap /mnt kitty kitty-terminfo neovim --noconfirm &&
 
 ## app level 9
+sleep 1
+clear
+echo "level 22"
 pacstrap /mnt gnome-keyring libsecret libpam-google-authenticator libpwquality cracklib polkit apparmor qrencode --noconfirm &&
 
 
 ## app level 10
+sleep 1
+clear
+echo "level 23"
 pacstrap /mnt prometheus prometheus-node-exporter --noconfirm &&
 
 
 ## app level 11
+sleep 1
+clear
+echo "level 24"
 pacstrap /mnt tang openssh ethtool iptables-nft firewalld --noconfirm &&
 
 
 ## app level 11
+sleep 1
+clear
+echo "level 25"
 pacstrap /mnt tuned tuned-ppd openssh rsync git btop less --noconfirm &&
 
 
 ## app level 12
+sleep 1
+clear
+echo "level 26"
 if [[ ! -z $( ip a | grep "wl*" )  ]];then
     mkdir -p /mnt/var/lib/iwd/ &&
     pacstrap /mnt iwd --noconfirm &&
@@ -131,18 +198,30 @@ fi
 
 
 ## app level 13
+sleep 1
+clear
+echo "level 27"
 pacstrap /mnt irqbalance tuned tuned-ppd --noconfirm &&
 
 
 ## app level 14
+sleep 1
+clear
+echo "level 28"
 pacstrap /mnt rsync grsync btop less --noconfirm &&
 
 
 ## app level 15
+sleep 1
+clear
+echo "level 29"
 pacstrap /mnt go hugo nginx git --noconfirm &&
 
 
 ## app level 16
+sleep 1
+clear
+echo "level 30"
 if [[ ! -z $( cat /proc/cpuinfo | grep "Intel" )  ]];then
     pacstrap /mnt intel-ucode --noconfirm
 fi
@@ -153,16 +232,27 @@ fi
 
 
 ## app level 17
-pacstrap /mnt tang clevis mkinitcpio-nfs-utils luksmeta  --noconfirm &&
+sleep 1
+clear
+echo "level 31"
+pacstrap /mnt tang clevis mkinitcpio-nfs-utils luksmeta --noconfirm &&
 
 
-
+sleep 1
+clear
+echo "level 32"
 cp -fr post  /mnt/ &&
 
 
+sleep 1
+clear
+echo "level 33"
 genfstab -U /mnt > /mnt/etc/fstab &&
 echo "" >> /mnt/etc/fstab &&
 echo "# /dev/mapper/proc-temp" >> /mnt/etc/fstab &&
 echo "tmpfs     					/tmp        		tmpfs   defaults,rw,nosuid,nodev,noexec,relatime,size=256M" >>  /mnt/etc/fstab &&
 
+sleep 1
+clear
+echo "level 34"
 arch-chroot /mnt
