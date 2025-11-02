@@ -157,7 +157,7 @@ pacstrap /mnt tang clevis mkinitcpio-nfs-utils luksmeta  --noconfirm &&
 
 
 
-cp -fr /install/post  /mnt/ &&
+cp -fr post  /mnt/ &&
 
 
 genfstab -U /mnt > /mnt/etc/fstab &&
