@@ -110,8 +110,11 @@ echo "$DESK_USERNAME ALL=(ALL:ALL) ALL" > /etc/sudoers.d/none &&
 sleep 3 && clear &&
 echo "level 7"&&
 mkdir -p /opt/flat &&
+if [[ -e /var/lib/flatpak/ ]];  then
+    cp -fr /var/lib/flatpak/* /opt/flat/ &&
+    rm -fr /var/lib/flatpak/
+fi
 ln -sf /opt/flat /var/lib/flatpak &&
-pacman -S flatpak gnome-software --noconfirm &&
 
 
 

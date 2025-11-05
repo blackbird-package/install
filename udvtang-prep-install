@@ -271,9 +271,15 @@ echo "level 29" &&
 pacstrap /mnt go hugo nginx --noconfirm &&
 
 
-## ucode
+## package
 sleep 3 && clear &&
 echo "level 30" &&
+pacstrap /mnt flatpak gnome-software --noconfirm  &&
+
+
+## ucode
+sleep 3 && clear &&
+echo "level 31" &&
 if [[ ! -z $( cat /proc/cpuinfo | grep "Intel" )  ]];then
     pacstrap /mnt intel-ucode --noconfirm
 fi
@@ -284,18 +290,18 @@ fi
 
 ## ndbe
 sleep 3 && clear &&
-echo "level 31" &&
+echo "level 32" &&
 pacstrap /mnt tang clevis mkinitcpio-nfs-utils luksmeta &&
 
 
 sleep 3 && clear &&
-echo "level 32" &&
+echo "level 33" &&
 echo "copy post installation script"
 cp -fr post  /mnt/ &&
 
 
 sleep 3 && clear &&
-echo "level 33" &&
+echo "level 34" &&
 echo "copy post installation script" &&
 if [[ ! -e  /mnt/opt/ ]];then
     echo "Error /mnt/opt doesnt exist, installation failed" 
