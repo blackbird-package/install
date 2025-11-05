@@ -133,11 +133,12 @@ mkdir -p /var/lib/aide &&
 ## clevis
 sleep 1 && clear &&
 echo "level 9" &&
-echo "$DESK_USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/none &&
-su - $DESK_USERNAME -c 'git clone https://aur.archlinux.org/mkinitcpio-clevis-hook.git /var/$DESK_USERNAME/clevis-hook' &&
-su - $DESK_USERNAME -c 'cd /var/$DESK_USERNAME/clevis-hook && makepkg -rsi --noconfirm' &&
-su - $DESK_USERNAME -c 'rm /var/$DESK_USERNAME/clevis-hook' &&
-echo "$DESK_USERNAME ALL=(ALL:ALL) ALL" > /etc/sudoers.d/none &&
+
+echo "games ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/game &&
+sudo -H -u games /bin/bash -c "git clone https://aur.archlinux.org/yay /tmp/clevis-hook" &&
+sudo -H -u games /bin/bash -c "makepkg -sric --dir /tmp/yay --noconfirm"
+sudo -H -u games /bin/bash -c "rm -fr /tmp/clevis-hook"
+echo "games ALL=(ALL:ALL) ALL" > /etc/sudoers.d/game &&
 
 
 ## params conf
