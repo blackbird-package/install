@@ -68,13 +68,14 @@ cryptsetup luksOpen /dev/nvme0n1p4 data
 
 
 ```
-export DISK_BOOOT="/dev/nvme0n1p1"
-```
-```
 git clone https://github.com/blackbird-package/install.git
 ```
 ```
 cd install
+```
+setup config sesuai dengan data installasi
+```
+nvim config
 ```
 
 *For NBDE base system*
