@@ -1,9 +1,9 @@
 #!/bin/bash
 
-PHYSICAL_BOOT="/dev/nvme0n1p5"
-PHYSICAL_PROC="/dev/nvme0n1p7"
-PHYSICAL_DATA="/dev/nvme0n1p8"
-IP_ADDRESSING="10.10.1.152"
+PHYSICAL_BOOT="/dev/sda6"
+PHYSICAL_PROC="/dev/sda8"
+PHYSICAL_DATA="/dev/sda9"
+IP_ADDRESSING="10.10.1.161"
 DESK_HOSTNAME="lazarus"
 DESK_USERNAME="lazarus"
 USER_PASSWORD="1511"
