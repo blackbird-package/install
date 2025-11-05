@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /post/config
+source $(pwd)/config
 
 if [[ -z $PHYSICAL_BOOT ]];then
     echo "Error disk boot is empty" &&
