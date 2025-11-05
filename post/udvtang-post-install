@@ -48,7 +48,7 @@ echo $DESK_HOSTNAME > /etc/hostname
 
 ## timectl
 sleep 1 && clear &&
-cecho "level 2"
+echo "level 2"
 ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime &&
 hwclock --systohc &&
 timedatectl set-ntp true &&
