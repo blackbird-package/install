@@ -220,13 +220,13 @@ pacstrap /mnt linux-hardened linux-firmware mkinitcpio base lvm2 btrfs-progs bub
 
 
 sleep 3 && clear &&
-echo "level 33" &&
+echo "level 17" &&
 echo "copy post installation script"
 cp -fr post  /mnt/ &&
 
 
 sleep 3 && clear &&
-echo "level 34" &&
+echo "level 18" &&
 echo "copy post installation script" &&
 if [[ ! -e  /mnt/opt/ ]];then
     echo "Error /mnt/opt doesnt exist, installation failed" 
@@ -247,7 +247,7 @@ fi
 
 
 sleep 3 && clear &&
-echo "level 34" &&
+echo "level 19" &&
 genfstab -U /mnt > /mnt/etc/fstab &&
 echo "" >> /mnt/etc/fstab &&
 echo "# /dev/mapper/proc-temp" >> /mnt/etc/fstab &&
@@ -255,5 +255,5 @@ echo "tmpfs     					/tmp        		tmpfs   defaults,rw,nosuid,nodev,noexec,relat
 
 
 sleep 3 && clear &&
-echo "level 35" &&
+echo "level 20" &&
 arch-chroot /mnt /bin/bash /post/udvtang-post-install
