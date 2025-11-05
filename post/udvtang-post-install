@@ -40,14 +40,14 @@ fi
 
 
 ## hostname
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 1" &&
 mkdir /usr/local/rbin &&
 echo $DESK_HOSTNAME > /etc/hostname
 
 
 ## timectl
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 2"
 ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime &&
 hwclock --systohc &&
@@ -59,13 +59,13 @@ systemctl enable systemd-timesyncd.service &&
 
 
 ## locale
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 3"
 locale-gen  &&
 
 
 ## administrator
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 4" &&
 if [ -e /etc/skel/.bashrc ];then
     rm /etc/skel/.bash*
@@ -86,7 +86,7 @@ fi
 
  
 ## virtualmin
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 5" &&
 if [[ -z $( grep games /etc/passwd ) ]];then
     useradd -d /var/games -u 50 -g games games &&
@@ -97,7 +97,7 @@ fi
 
 
 ## useradd
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 6" &&
 touch /etc/sudoers.d/none &&
 
@@ -109,7 +109,7 @@ echo "$DESK_USERNAME ALL=(ALL:ALL) ALL" > /etc/sudoers.d/none &&
 
 
 ## application
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 7"&&
 mkdir -p /opt/flat &&
 ln -sf /opt/flat /var/lib/flatpak &&
@@ -118,7 +118,7 @@ pacman /mnt flatpak gnome-software --noconfirm &&
 
 
 ## aide hids
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 8" &&
 pkg-config --libs --cflags glib-2.0 &&
 cd /tmp &&
@@ -131,7 +131,7 @@ mkdir -p /var/lib/aide &&
 
 
 ## clevis
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 9" &&
 
 echo "games ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/game &&
@@ -142,7 +142,7 @@ echo "games ALL=(ALL:ALL) ALL" > /etc/sudoers.d/game &&
 
 
 ## params conf
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 10" &&
 echo "cryptdevice=UUID=$(blkid -s UUID -o value $PHYSICAL_PROC):proc root=/dev/proc/root" > /etc/cmdline.d/01-boot.conf &&
 echo "data UUID=$(blkid -s UUID -o value $PHYSICAL_DATA) none" >> /etc/crypttab &&
@@ -150,13 +150,13 @@ echo "data UUID=$(blkid -s UUID -o value $PHYSICAL_DATA) none" >> /etc/crypttab 
 
 
 ## nbde server
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 11" &&
 echo "ip=$IP_ADDRESSING::10.10.1.1:255.255.255.0::eth0:none nameserver=10.10.1.1 nameserver=1.1.1.1 nameserver=8.8.8.8 nameserver=1.0.0.1 nameserver=8.8.4.4 nameserver=9.9.9.9 nameserver=149.112.112.112 " > /etc/cmdline.d/05-nets.conf &&
 
 
 ## boot config
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 12" &&
 rm -fr /etc/mkinitcpio.conf.d &&
 rm /boot/initramfs-linux-hardened* &&
@@ -168,7 +168,7 @@ mkinitcpio -P &&
 
 
 ## service activation
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 13" &&
 systemctl enable systemd-timesyncd.service &&
 systemctl enable tangd.socket &&
@@ -193,7 +193,7 @@ systemctl enable --global pipewire-pulse &&
 systemctl enable clevis-luks-askpass.path &&
 
 ## bind tang
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 14" &&
 echo "Insert proc disk encryption password"
 sudo clevis luks bind -d $PHYSICAL_PROC tang '{"url":"http://10.10.1.16:7500"}' &&
@@ -201,7 +201,7 @@ echo "Insert data disk encryption password"
 sudo clevis luks bind -d $PHYSICAL_DATA tang '{"url":"http://10.10.1.16:7500"}' &&
 
 ## finishing
-sleep 1 && clear &&
+sleep 3 && clear &&
 echo "level 15" &&
 aide --init &&
 mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
