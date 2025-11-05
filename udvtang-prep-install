@@ -237,7 +237,7 @@ pacstrap /mnt pipewire pipewire-pulse pipewire-jack wireplumber pavucontrol sof-
 ## graphic
 sleep 1 && clear &&
 echo "level 19" &&
-pacstrap /mnt brightnessctl --noconfirm &&
+pacstrap /mnt brightnessctl xorg-xwayland --noconfirm &&
 
 
 ## fontsys
