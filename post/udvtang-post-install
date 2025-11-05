@@ -166,7 +166,6 @@ bootctl --path=/boot install &&
 mkinitcpio -P &&
 
 
-
 ## service activation
 sleep 3 && clear &&
 echo "level 13" &&
