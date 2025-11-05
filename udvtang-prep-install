@@ -163,7 +163,7 @@ fi
 echo "encrypt ring directory"
 echo $RING_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode /dev/proc/ring &&
 echo "open ring directory"
-echo $RING_PASSWORD | cryptsetup luksOpen --key-file - lvm_keys /dev/proc/ring &&
+echo -n $RING_PASSWORD | cryptsetup --batch-mode luksOpen lvm_keys /dev/proc/ring &&
 mkfs.ext4 -b 4096 /dev/mapper/lvm_keys
 
 
