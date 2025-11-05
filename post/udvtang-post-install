@@ -86,12 +86,24 @@ chown -R games:games /var/games &&
 passwd -l games &&
 
 
+
+## useradd
+sleep 1 && clear &&
+echo "level 13" &&
+touch /etc/sudoers.d/none &&
+
+if [[ -z $( grep $DESK_USERNAME /etc/passwd ) ]];then
+    useradd -m $DESK_USERNAME
+fi
+passwd $DESK_USERNAME &&
+
 ## application
 sleep 1 && clear &&
 echo "level 6"&&
 mkdir -p /opt/flat &&
 ln -sf /opt/flat /var/lib/flatpak &&
 pacstrap /mnt flatpak gnome-software --noconfirm &&
+
 
 
 ## aide hids
@@ -110,12 +122,11 @@ mkdir -p /var/lib/aide &&
 ## clevis
 sleep 1 && clear &&
 echo "level 8" &&
-touch /etc/sudoers.d/games &&
-echo "games ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/games &&
-su - games -c 'git clone https://aur.archlinux.org/mkinitcpio-clevis-hook.git /var/games/clevis-hook' &&
-su - games -c 'cd /var/games/clevis-hook && makepkg -rsi --noconfirm' &&
-su - games -c 'rm /var/games/clevis-hook' &&
-rm /etc/sudoers.d/games &&
+echo "$DESK_USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/none &&
+su - $DESK_USERNAME -c 'git clone https://aur.archlinux.org/mkinitcpio-clevis-hook.git /var/$DESK_USERNAME/clevis-hook' &&
+su - $DESK_USERNAME -c 'cd /var/$DESK_USERNAME/clevis-hook && makepkg -rsi --noconfirm' &&
+su - $DESK_USERNAME -c 'rm /var/$DESK_USERNAME/clevis-hook' &&
+echo "$DESK_USERNAME ALL=(ALL:ALL) ALL" > /etc/sudoers.d/none &&
 
 
 ## params conf
@@ -168,18 +179,6 @@ systemctl enable --global hyprpolkitagent &&
 systemctl enable --global waybar &&
 systemctl enable --global pipewire-pulse &&
 systemctl enable clevis-luks-askpass.path &&
-
-
-## useradd
-sleep 1 && clear &&
-echo "level 13" &&
-touch /etc/sudoers.d/none &&
-echo "$DESK_USERNAME ALL=(ALL:ALL) ALL" > /etc/sudoers.d/none &&
-
-if [[ -z $( grep $DESK_USERNAME /etc/passwd ) ]];then
-    useradd -m $DESK_USERNAME
-fi
-passwd $DESK_USERNAME &&
 
 ## bind tang
 sleep 1 && clear &&
