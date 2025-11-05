@@ -2,10 +2,6 @@
 
 source $(pwd)/config
 
-if [[ -e /mnt/usr ]];then
-    cd / &&
-    umount -R /mnt
-fi
 
 if [[ -e /dev/proc ]];then
     yes Y | lvremove /dev/proc/* &&
