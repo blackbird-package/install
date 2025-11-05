@@ -1,4 +1,4 @@
-# mobconf
+# installer
 blackbird netbook or laptop config
 
 
