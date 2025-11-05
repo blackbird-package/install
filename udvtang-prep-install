@@ -58,7 +58,7 @@ if [[ ! -e /dev/proc/root ]];then
 else
     wipefs /dev/proc/root
 fi
-yes | mkfs.ext4 -F -b 4096 /dev/proc/root &&
+yes | mkfs.ext4 -b 4096 -F /dev/proc/root &&
 mount /dev/proc/root /mnt &&
 
 
