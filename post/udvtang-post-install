@@ -42,7 +42,9 @@ fi
 ## hostname
 sleep 3 && clear &&
 echo "level 1" &&
-mkdir /usr/local/rbin &&
+if [[ -z /usr/local/rbin ]];then
+    mkdir /usr/local/rbin
+fi
 echo $DESK_HOSTNAME > /etc/hostname
 
 
