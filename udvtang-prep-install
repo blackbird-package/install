@@ -43,8 +43,11 @@ fi
 
 sleep 1 && clear &&
 echo "level 2" &&
-pvcreate /dev/mapper/proc  &&
-vgcreate proc /dev/mapper/proc &&
+echo "create volume group proc" &&
+if [[ -z /dev/mapper/proc ]];then
+    pvcreate /dev/mapper/proc  &&
+    vgcreate proc /dev/mapper/proc
+fi
 
 
 sleep 1 && clear &&
