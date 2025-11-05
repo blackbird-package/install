@@ -136,7 +136,7 @@ sleep 3 && clear &&
 echo "level 9" &&
 
 echo "games ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/game &&
-sudo -H -u games /bin/bash -c "git clone https://aur.archlinux.org/yay /tmp/clevis-hook" &&
+sudo -H -u games /bin/bash -c "git clone https://aur.archlinux.org/mkinitcpio-clevis-hook.git /tmp/clevis-hook" &&
 sudo -H -u games /bin/bash -c "makepkg -sric --dir /tmp/clevis-hook --noconfirm" &&
 sudo -H -u games /bin/bash -c "rm -fr /tmp/clevis-hook" &&
 echo "games ALL=(ALL:ALL) ALL" > /etc/sudoers.d/game &&
