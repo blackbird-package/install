@@ -2,6 +2,16 @@
 
 source $(pwd)/config
 
+if [ -d /dev/proc ];then
+    swapoff /dev/proc/swap
+    yes | lvremove /dev/proc/*
+    yes | vgremove proc
+    yes | pvremove /dev/mapper/proc
+    cryptsetup luksClose /dev/mapper/proc   
+fi
+
+
+
 if [[ -z $PHYSICAL_BOOT ]];then
     echo "Error disk boot is empty" && exit
 fi
@@ -20,14 +30,14 @@ fi
 
 
 if [[ ! -e /dev/mapper/proc ]];then
-    cryptsetup luksFormat --sector-size=4096 $PHYSICAL_PROC &&
+    echo $LUKS_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode $PHYSICAL_PROC &&
     cryptsetup luksOpen $PHYSICAL_PROC proc &&
     echo "encrypted proc volume"
 fi
 
 
 if [[ ! -e /dev/mapper/data ]];then
-    cryptsetup luksFormat --sector-size=4096 $PHYSICAL_DATA &&
+    echo $LUKS_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode $PHYSICAL_DATA &&
     cryptsetup luksOpen $PHYSICAL_DATA data &&
     echo "encrypted data volume"
 fi
