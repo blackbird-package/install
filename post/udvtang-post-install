@@ -102,7 +102,7 @@ touch /etc/sudoers.d/none &&
 if [[ -z $( grep $DESK_USERNAME /etc/passwd ) ]];then
     useradd -m $DESK_USERNAME
 fi
-echo $USER_PASSWORD | passwd --stdin $DESK_USERNAME
+echo "$DESK_USERNAME:$USER_PASSWORD" | chpasswd --crypt-method SHA512 
 echo "$DESK_USERNAME ALL=(ALL:ALL) ALL" > /etc/sudoers.d/none &&
 
 
@@ -199,9 +199,9 @@ systemctl enable clevis-luks-askpass.path &&
 sleep 3 && clear &&
 echo "level 14" &&
 echo "Insert proc disk encryption password"
-sudo clevis luks bind -d $PHYSICAL_PROC tang '{"url":"http://10.10.1.16:7500"}' &&
+echo  $LUKS_PASSWORD | clevis luks bind -d $PHYSICAL_PROC tang '{"url":"http://10.10.1.16:7500"} -k -' &&
 echo "Insert data disk encryption password"
-sudo clevis luks bind -d $PHYSICAL_DATA tang '{"url":"http://10.10.1.16:7500"}' &&
+echo  $LUKS_PASSWORD | clevis luks bind -d $PHYSICAL_DATA tang '{"url":"http://10.10.1.16:7500"} -k -' &&
 
 ## finishing
 sleep 3 && clear &&

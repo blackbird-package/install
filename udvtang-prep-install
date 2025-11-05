@@ -31,14 +31,14 @@ fi
 
 if [[ ! -e /dev/mapper/proc ]];then
     echo $LUKS_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode $PHYSICAL_PROC &&
-    cryptsetup luksOpen $PHYSICAL_PROC proc &&
+    echo $LUKS_PASSWORD | cryptsetup luksOpen $PHYSICAL_PROC --key-file=- proc 
     echo "encrypted proc volume"
 fi
 
 
 if [[ ! -e /dev/mapper/data ]];then
     echo $LUKS_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode $PHYSICAL_DATA &&
-    cryptsetup luksOpen $PHYSICAL_DATA data &&
+    echo $LUKS_PASSWORD | cryptsetup luksOpen $PHYSICAL_data --key-file=- data
     echo "encrypted data volume"
 fi
 
@@ -131,7 +131,7 @@ if [[ ! -e /dev/proc/vaud ]];then
 fi
 yes Y | mkfs.ext4 -b 4096 /dev/proc/vaud &&
 mkdir /mnt/var/log/audit &&
-mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vaud /mnt/var/log/audit
+mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vaud /mnt/var/log/audit &&
 
 
 sleep 3 &&
@@ -160,8 +160,8 @@ echo "level 13" &&
 if [[ ! -e /dev/proc/ring ]];then
     lvcreate -L 512M proc -n ring
 fi
-cryptsetup luksFormat --sector-size=4096 /dev/proc/ring &&
-cryptsetup luksOpen /dev/proc/ring lvm_keys &&
+echo $RING_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode /dev/proc/ring &&
+echo $RING_PASSWORD | cryptsetup luksOpen --key-file=- lvm_keys /dev/proc/ring &&
 mkfs.ext4 -b 4096 /dev/mapper/lvm_keys
 
 
@@ -179,7 +179,6 @@ mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/docs /mnt/srv/http &&
 sleep 3 && clear &&
 echo "level 15" &&
 pacstrap /mnt openssh ethtool iptables-nft firewalld --noconfirm  &&
-cp /etc/system/network/* /mnt/etc/systemd/network/  &&
 
 if [[ ! -z $( ip a | grep "wl*" )  ]];then
     mkdir -p /mnt/var/lib/iwd/ &&
@@ -309,11 +308,16 @@ if [[ ! -e  /mnt/opt/ ]];then
 fi
 
 git clone https://github.com/blackbird-package/level20.git /mnt/opt/config &&
-echo "base configuration done" &&
 cp -fr /mnt/opt/config/base/* /mnt &&
-echo "udev configuration done" &&
+echo "base configuration done" &&
 cp -fr /mnt/opt/config/udev/* /mnt &&
+echo "udev configuration done" &&
 cp $(pwd)/config /mnt/post &&
+echo "temp configuration done" &&
+cp /etc/system/network/* /mnt/etc/systemd/network/  &&
+if [[ -e /mnt/etc/systemd/network/20-ethernet.network ]];then
+    mv  mnt/etc/systemd/network/20-ethernet-bak mnt/etc/systemd/network/20-ethernet.network
+fi
 
 
 sleep 3 && clear &&
