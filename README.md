@@ -8,29 +8,9 @@ blackbird netbook or laptop config
 | ---- | --------- | ----------------- | ----- | ----- | -------- |  ------ | -------------------------- |
 | 0    | 1         | efi               | false | false | boot     |  fat 32 | /boot                      |
 | 0    | 2         | linux file system | true  | false | keys     |  luks   | none                       |
-| 0    | 3         | linux filesystems | true  | true  | proc |  luks   | see logical layout point 1 |
-| 0    | 4         | linux home        | true  | true  | data |  luks   | see logical layout point 1 |
+| 0    | 3         | linux filesystems | true  | true  | proc     |  luks   | see logical layout point 1 |
+| 0    | 4         | linux home        | true  | true  | data     |  luks   | see logical layout point 1 |
 
-### ecnrypt partition
-```
-cryptsetup luksFormat --sector-size=4096 /dev/nvme0n1p2
-```
-
-```
-cryptsetup luksFormat --sector-size=4096 /dev/nvme0n1p3
-```
-
-```
-cryptsetup luksFormat --sector-size=4096 /dev/nvme0n1p4
-```
-
-```
-cryptsetup luksOpen /dev/nvme0n1p3 proc
-```
-
-```
-cryptsetup luksOpen /dev/nvme0n1p4 data
-```
 
 ### logical volume proc
 | partition | list  | group | name |  mount                    | format |
@@ -65,8 +45,6 @@ cryptsetup luksOpen /dev/nvme0n1p4 data
 
 
 ### logical volume data
-
-
 ```
 git clone https://github.com/blackbird-package/install.git
 ```
