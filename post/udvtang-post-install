@@ -86,7 +86,7 @@ sleep 1
 clear
 echo "level 5"
 useradd -d /var/games -u 50 -g games games &&
-chown -R games:games /var/game &&
+chown -R games:games /var/games &&
 passwd -l games &&
 
 
