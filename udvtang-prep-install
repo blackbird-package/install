@@ -3,7 +3,7 @@
 source $(pwd)/config
 
 
-if [[ -e /dev/proc ]];then
+if [[ -e /dev/mapper/proc ]];then
     yes Y | lvremove /dev/proc/* 
 fi
 
@@ -53,7 +53,7 @@ echo "level 3" &&
 if [[ ! -e /dev/proc/root ]];then
     lvcreate -L 10G proc -n root
 fi
-echo -n Y | mkfs.ext4 -b 4096 /dev/proc/root &&
+yes Y | mkfs.ext4 -b 4096 /dev/proc/root &&
 mount /dev/proc/root /mnt &&
 
 
