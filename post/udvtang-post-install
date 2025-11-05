@@ -113,7 +113,7 @@ sleep 3 && clear &&
 echo "level 7"&&
 mkdir -p /opt/flat &&
 ln -sf /opt/flat /var/lib/flatpak &&
-pacman /mnt flatpak gnome-software --noconfirm &&
+pacman -S flatpak gnome-software --noconfirm &&
 
 
 
