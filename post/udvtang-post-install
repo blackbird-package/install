@@ -70,21 +70,29 @@ echo "level 4" &&
 if [ -e /etc/skel/.bashrc ];then
     rm /etc/skel/.bash*
 fi
-useradd -d /var/usr -p $shadow loki &&
-chown -R loki:loki /var/usr &&
-chmod 700 /var/usr/.ssh/ &&
-chmod 600 /var/usr/.ssh/authorized_keys &&
-sudo chattr +i /var/usr/.ssh/authorized_keys &&
-usermod -aG wheel loki &&
+if [[ -z $( grep loki /etc/passwd ) ]];then
+    useradd -d /var/usr -p $shadow loki &&
+    chown -R loki:loki /var/usr &&
+    chmod 700 /var/usr/.ssh/ &&
+    chmod 600 /var/usr/.ssh/authorized_keys &&
+    sudo chattr +i /var/usr/.ssh/authorized_keys &&
+    usermod -aG wheel loki
+fi
+
+
+
+
 
 
  
 ## virtualmin
 sleep 1 && clear &&
 echo "level 5" &&
-useradd -d /var/games -u 50 -g games games &&
-chown -R games:games /var/games &&
-passwd -l games &&
+if [[ -z $( grep games /etc/passwd ) ]];then
+    useradd -d /var/games -u 50 -g games games &&
+    chown -R games:games /var/games &&
+    passwd -l games
+fi
 
 
 
