@@ -4,7 +4,7 @@ source $(pwd)/config
 
 
 if [[ -e /dev/mapper/proc ]];then
-    yes Y | lvremove /dev/proc/* 
+    yes Y | lvremove /dev/proc/*
 fi
 
 
@@ -53,6 +53,7 @@ echo "level 3" &&
 if [[ ! -e /dev/proc/root ]];then
     lvcreate -L 10G proc -n root
 fi
+yes y | wipefs -f /dev/proc/root &&
 yes y | mkfs.ext4 -b 4096 -q /dev/proc/root &&
 mount /dev/proc/root /mnt &&
 
@@ -75,6 +76,7 @@ echo "level 5" &&
 if [[ ! -e /dev/proc/opts ]];then
     lvcreate -L 15G proc -n opts
 fi
+
 yes Y | mkfs.ext4 -b 4096 /dev/proc/opts &&
 mkdir /mnt/opt &&
 mount -o rw,nodev,nosuid,relatime /dev/proc/opts /mnt/opt &&
