@@ -199,9 +199,9 @@ systemctl enable clevis-luks-askpass.path &&
 sleep 3 && clear &&
 echo "level 14" &&
 echo "Insert proc disk encryption password"
-echo  $LUKS_PASSWORD | clevis luks bind -d $PHYSICAL_PROC tang '{"url":"http://10.10.1.16:7500"} -k -' &&
+echo  $LUKS_PASSWORD | clevis luks bind -d $PHYSICAL_PROC tang '{"url":"http://10.10.1.16:7500"} -f -k -' &&
 echo "Insert data disk encryption password"
-echo  $LUKS_PASSWORD | clevis luks bind -d $PHYSICAL_DATA tang '{"url":"http://10.10.1.16:7500"} -k -' &&
+echo  $LUKS_PASSWORD | clevis luks bind -d $PHYSICAL_DATA tang '{"url":"http://10.10.1.16:7500"} -f -k -' &&
 
 ## finishing
 sleep 3 && clear &&
