@@ -31,14 +31,14 @@ fi
 
 if [[ ! -e /dev/mapper/proc ]];then
     echo $LUKS_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode $PHYSICAL_PROC &&
-    echo $LUKS_PASSWORD | cryptsetup luksOpen $PHYSICAL_PROC --key-file - proc 
+    echo -n $LUKS_PASSWORD | cryptsetup --batch-mode luksOpen $PHYSICAL_PROC proc 
     echo "encrypted proc volume"
 fi
 
 
 if [[ ! -e /dev/mapper/data ]];then
     echo $LUKS_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode $PHYSICAL_DATA &&
-    echo $LUKS_PASSWORD | cryptsetup luksOpen $PHYSICAL_data --key-file - data
+    echo -n $LUKS_PASSWORD | cryptsetup --batch-mode luksOpen $PHYSICAL_DATA data
     echo "encrypted data volume"
 fi
 
