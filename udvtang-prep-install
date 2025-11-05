@@ -3,39 +3,33 @@
 source $(pwd)/config
 
 if [[ -z $PHYSICAL_BOOT ]];then
-    echo "Error disk boot is empty" &&
-    exit
+    echo "Error disk boot is empty" && exit
 fi
 
 if [[ -z $PHYSICAL_PROC ]];then
-    echo "Error disk proc is empty" &&
-    exit
+    echo "Error disk proc is empty" && exit
 fi
 
 if [[ -z $PHYSICAL_DATA ]];then
-    echo "Error disk data is empty" &&
-    exit
+    echo "Error disk data is empty" && exit
 fi
 
 if [[ -z $DESK_USERNAME ]];then
-    echo "Error username data is empty" &&
-    exit
+    echo "Error username data is empty" && exit
 fi
 
 
 if [[ -e /dev/mapper/proc ]];then
     cryptsetup luksFormat --sector-size=4096 $PHYSICAL_PROC &&
     cryptsetup luksOpen $PHYSICAL_PROC proc &&
-    echo "encrypted proc volume" &&
-    exit
+    echo "encrypted proc volume"
 fi
 
 
 if [[ -e /dev/mapper/data ]];then
     cryptsetup luksFormat --sector-size=4096 $PHYSICAL_DATA &&
     cryptsetup luksOpen $PHYSICAL_DATA data &&
-    echo "encrypted data volume" &&
-    exit
+    echo "encrypted data volume"
 fi
 
 
