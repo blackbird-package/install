@@ -2,7 +2,8 @@
 
 source $(pwd)/config
 
-if [[ -e /mnt/* ]];then
+if [[ -e /mnt/usr ]];then
+    cd / &&
     umount -R /mnt
 fi
 
