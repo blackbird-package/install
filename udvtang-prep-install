@@ -56,13 +56,13 @@ echo "level 3" &&
 if [[ ! -e /dev/proc/root ]];then
     lvcreate -L 10G proc -n root
 fi
-yes Y | mkfs.ext4 -b 4096 /dev/proc/root &&
+yes | mkfs.ext4 -b 4096 /dev/proc/root &&
 mount /dev/proc/root /mnt &&
 
 
 sleep 3 && clear &&
 echo "level 4" &&
-yes Y | mkfs.vfat -F32 -S 4096 -n BOOT $PHYSICAL_BOOT &&
+yes | mkfs.vfat -F32 -S 4096 -n BOOT $PHYSICAL_BOOT &&
 mkdir /mnt/boot &&
 mount -o uid=0,gid=0,fmask=0077,dmask=0077 $PHYSICAL_BOOT /mnt/boot &&
 
@@ -78,7 +78,7 @@ echo "level 5" &&
 if [[ ! -e /dev/proc/opts ]];then
     lvcreate -L 15G proc -n opts
 fi
-yes Y | mkfs.ext4 -b 4096 /dev/proc/opts &&
+yes | mkfs.ext4 -b 4096 /dev/proc/opts &&
 mkdir /mnt/opt &&
 mount -o rw,nodev,nosuid,relatime /dev/proc/opts /mnt/opt &&
 
@@ -88,7 +88,7 @@ echo "level 6" &&
 if [[ ! -e /dev/proc/vars ]];then
    lvcreate -L 2G proc -n vars
 fi
-yes Y | mkfs.ext4 -b 4096 /dev/proc/vars &&
+yes | mkfs.ext4 -b 4096 /dev/proc/vars &&
 mkdir /mnt/var &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vars /mnt/var &&
 
@@ -98,7 +98,7 @@ echo "level 7"
 if [[ ! -e /dev/proc/libs ]];then
     lvcreate -L 512M proc -n libs
 fi
-yes Y | mkfs.ext4 -b 4096 /dev/proc/libs &&
+yes | mkfs.ext4 -b 4096 /dev/proc/libs &&
 mkdir /mnt/var/usr &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/libs /mnt/var/usr &&
 
@@ -108,7 +108,7 @@ echo "level 8" &&
 if [[ ! -e /dev/proc/game ]];then
     lvcreate -L 512M proc -n game
 fi
-yes Y | mkfs.ext4 -b 4096 /dev/proc/game &&
+yes | mkfs.ext4 -b 4096 /dev/proc/game &&
 mkdir /mnt/var/games &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/game /mnt/var/games &&
 
@@ -118,7 +118,7 @@ echo "level 9" &&
 if [[ ! -e /dev/proc/vlog ]];then
     lvcreate -L 1G proc -n vlog
 fi
-yes Y | mkfs.ext4 -b 4096 /dev/proc/vlog &&
+yes | mkfs.ext4 -b 4096 /dev/proc/vlog &&
 mkdir /mnt/var/log &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vlog /mnt/var/log &&
 
@@ -129,7 +129,7 @@ echo "level 10" &&
 if [[ ! -e /dev/proc/vaud ]];then
     lvcreate -L 256M proc -n vaud
 fi
-yes Y | mkfs.ext4 -b 4096 /dev/proc/vaud &&
+yes | mkfs.ext4 -b 4096 /dev/proc/vaud &&
 mkdir /mnt/var/log/audit &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vaud /mnt/var/log/audit &&
 
@@ -140,7 +140,7 @@ echo "level 11" &&
 if [[ ! -e /dev/proc/vtmp ]];then
     lvcreate -L 2G proc -n vtmp
 fi
-yes Y | mkfs.ext4 -b 4096 /dev/proc/vtmp &&
+yes | mkfs.ext4 -b 4096 /dev/proc/vtmp &&
 mkdir /mnt/var/tmp &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vtmp /mnt/var/tmp &&
 
@@ -150,7 +150,7 @@ echo "level 12" &&
 if [[ ! -e /dev/proc/vpac ]];then
     lvcreate -L 2G proc -n vpac
 fi
-yes Y | mkfs.ext4 -b 4096 /dev/proc/vpac &&
+yes | mkfs.ext4 -b 4096 /dev/proc/vpac &&
 mkdir -p /mnt/var/cache/pacman &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vpac /mnt/var/cache/pacman &&
 
