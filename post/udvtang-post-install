@@ -82,27 +82,24 @@ usermod -aG wheel loki &&
 
  
 ## virtualmin
-sleep 1
-clear
-echo "level 5"
+sleep 1 && clear &&
+echo "level 5" &&
 useradd -d /var/games -u 50 -g games games &&
 chown -R games:games /var/games &&
 passwd -l games &&
 
 
 ## application
-sleep 1
-clear
-echo "level 6"
+sleep 1 && clear &&
+echo "level 6"&&
 mkdir -p /opt/flat &&
 ln -sf /opt/flat /var/lib/flatpak &&
 pacstrap /mnt flatpak gnome-software --noconfirm &&
 
 
 ## aide hids
-sleep 1
-clear
-echo "level 7"
+sleep 1 && clear
+echo "level 7" &&
 pkg-config --libs --cflags glib-2.0 &&
 cd /tmp &&
 wget https://github.com/aide/aide/releases/download/v0.19.2/aide-0.19.2.tar.gz  &&
