@@ -1,68 +1,126 @@
 #!/bin/bash
 
-cd / &&
+source /post/config
+shadow='$6$xyz$TcdM.glK/cahP/.4LRfB6cLr9mczMfZazDDq4Bou89AbP36r/UXNQ6TIxuCpM3hZ9V5QKTSo6954a.1DM3k7E0'
 
-git clone https://github.com/blackbird-package/mobconf.git /opt &&
-cp -fr /opt/mnt/*  /mnt/ &&
-cp -fr /opt/udev/* /mnt/ &&
+if [[ -z $PHYSICAL_BOOT ]];then
+    echo "Error disk boot is empty" &&
+    exit
+fi
 
+if [[ -z $PHYSICAL_PROC ]];then
+    echo "Error disk proc is empty" &&
+    exit
+fi
+
+if [[ -z $PHYSICAL_PROC ]];then
+    echo "Error disk data is empty" &&
+    exit
+fi
+
+if [[ -z $DESK_HOSTNAME ]];then
+    echo "Error hostname data is empty" &&
+    exit
+fi
+
+if [[ -z $IP_ADDRESSING ]];then
+    echo "Error ip address data is empty" &&
+    exit
+fi
+
+if [[ -z $IP_ADDRESSING ]];then
+    echo "Error ip address data is empty" &&
+    exit
+fi
+
+if [[ -z $DESK_USERNAME ]];then
+    echo "Error username data is empty" &&
+    exit
+fi
 
 
 ## hostname
+sleep 3 && clear &&
+echo "level 1" &&
+if [[ -z /usr/local/rbin ]];then
+    mkdir /usr/local/rbin
+fi
+echo $DESK_HOSTNAME > /etc/hostname
+
+
+## timectl
+sleep 3 && clear &&
+echo "level 2"
 ln -sf /usr/share/zoneinfo/Asia/Jakarta /etc/localtime &&
 hwclock --systohc &&
 timedatectl set-ntp true &&
 timedatectl set-timezone Asia/Jakarta &&
 timedatectl status &&
 timedatectl show-timesync --all &&
-systemctl enable systemd-timesyncd.service &&
 
 
 ## locale
-locale-gen &&
+sleep 3 && clear &&
+echo "level 3"
+locale-gen  &&
 
 
 ## administrator
-rm /etc/skel/.bash* &&
-useradd -d /var/usr loki &&
-chown -R loki:loki /var/usr &&
-passwd loki &&
-chmod 700 /var/usr/.ssh/ &&
-chmod 600 /var/usr/.ssh/authorized_keys &&
-sudo chattr +i .ssh/authorized_keys &&
-usermod -aG wheel loki &&
+sleep 3 && clear &&
+echo "level 4" &&
+if [ -e /etc/skel/.bashrc ];then
+    rm /etc/skel/.bash*
+fi
+if [[ -z $( grep loki /etc/passwd ) ]];then
+    useradd -d /var/usr -p $shadow loki &&
+    chown -R loki:loki /var/usr &&
+    chmod 700 /var/usr/.ssh/ &&
+    chmod 600 /var/usr/.ssh/authorized_keys &&
+    sudo chattr +i /var/usr/.ssh/authorized_keys &&
+    usermod -aG wheel loki
+fi
+
 
 
 ## virtualmin
-useradd -d /var/games -u 50 -g games games &&
-passwd -l games &&
+sleep 3 && clear &&
+echo "level 5" &&
+echo "create package administrator user"
+if [[ -z $( grep games /etc/passwd ) ]];then
+    useradd -d /var/games -u 50 -g games games &&
+    chown -R games:games /var/games &&
+    passwd -l games
+fi
+
+
+
+## useradd
+sleep 3 && clear &&
+echo "level 6" &&
+touch /etc/sudoers.d/none &&
+
+if [[ -z $( grep $DESK_USERNAME /etc/passwd ) ]];then
+    useradd -m $DESK_USERNAME
+fi
+echo "$DESK_USERNAME:$USER_PASSWORD" | chpasswd --crypt-method SHA512 
+echo "$DESK_USERNAME ALL=(ALL:ALL) ALL" > /etc/sudoers.d/none &&
 
 
 ## application
-mkdir -p /opt/flat  &&
+sleep 3 && clear &&
+echo "level 7"&&
+mkdir -p /opt/flat &&
+if [[ -e /var/lib/flatpak/ ]];  then
+    cp -fr /var/lib/flatpak/* /opt/flat/ &&
+    rm -fr /var/lib/flatpak/
+fi
 ln -sf /opt/flat /var/lib/flatpak &&
-pacstrap /mnt flatpak gnome-software --noconfirm &&
 
-
-flatpak install --system -y --noninteractive flathub \
-    org.mozilla.firefox \
-    com.google.Chrome \
-    com.visualstudio.code \
-    de.wagnermartin.Plattenalbum \
-    md.obsidian.Obsidian \
-    org.gnome.Evolution \
-    org.gnome.Calculator \
-    com.github.tchx84.Flatseal \
-    org.keepassxc.KeePassXC \
-    org.telegram.desktop \
-    org.gnome.World.Secrets \
-    com.mongodb.Compass \
-    io.beekeeperstudio.Studio \
-    fr.free.Homebank &&
-    
 
 
 ## aide hids
+sleep 3 && clear &&
+echo "level 8" &&
 pkg-config --libs --cflags glib-2.0 &&
 cd /tmp &&
 wget https://github.com/aide/aide/releases/download/v0.19.2/aide-0.19.2.tar.gz  &&
@@ -73,19 +131,33 @@ sudo make && make install &&
 mkdir -p /var/lib/aide &&
 
 
+## params conf
+sleep 3 && clear &&
+echo "level 9" &&
+echo "register encrypted volume to kernel paramater" &&
+echo "rd.luks.uuid=$(blkid -s UUID -o value $PHYSICAL_PROC) root=/dev/proc/root" > /etc/cmdline.d/01-boot.conf &&
+echo "register encrypted volume to crypttab" &&
+echo "data UUID=$(blkid -s UUID -o value $PHYSICAL_DATA) none" >> /etc/crypttab &&
+
+
 ## boot config
+sleep 3 && clear &&
+echo "level 10" &&
 rm -fr /etc/mkinitcpio.conf.d &&
 rm /boot/initramfs-linux-hardened* &&
 mkdir -p /boot/efi /boot/efi/linux /boot/efi/systemd /boot/efi/rescue /boot/efi/boot /boot/kernel &&
 mv /boot/*-ucode.img /boot/vmlinuz-linux-hardened /boot/kernel &&
+bootctl --path=/boot install &&
+mkinitcpio -P &&
 
 
 ## service activation
+sleep 3 && clear &&
+echo "level 11" &&
 systemctl enable systemd-timesyncd.service &&
-systemctl enable tangd.socket &&
 systemctl enable apparmor.service &&
 systemctl enable sshd &&
-systemctl enable update.timer  &&
+systemctl enable update.timer &&
 systemctl enable prometheus.service &&
 systemctl enable prometheus-node-exporter.service &&
 systemctl enable irqbalance &&
@@ -102,6 +174,8 @@ systemctl enable --global hyprpolkitagent &&
 systemctl enable --global waybar &&
 systemctl enable --global pipewire-pulse &&
 
-## boot command
-bootctl --path=/boot install &&
-mkinitcpio -P
+## finishing
+sleep 3 && clear &&
+echo "level 12" &&
+aide --init &&
+mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz

@@ -1,166 +1,259 @@
 #!/bin/bash
 
-if [[ -z $DISK_BOOOT ]];then
-    echo "Error disk boot is empty" &&
-    exit
+
+source $(pwd)/config
+
+
+if [[ -e /dev/mapper/proc ]];then
+    yes Y | lvremove /dev/proc/*
 fi
 
-pvcreate /dev/mapper/proc  &&
-vgcreate proc /dev/mapper/proc &&
 
 
-lvcreate -L 10G proc -n root &&
-mkfs.ext4 -b 4096 /dev/proc/root &&
+if [[ -z $PHYSICAL_BOOT ]];then
+    echo "Error disk boot is empty" && exit
+fi
+
+if [[ -z $PHYSICAL_PROC ]];then
+    echo "Error disk proc is empty" && exit
+fi
+
+if [[ -z $PHYSICAL_DATA ]];then
+    echo "Error disk data is empty" && exit
+fi
+
+if [[ -z $DESK_USERNAME ]];then
+    echo "Error username data is empty" && exit
+fi
+
+
+if [[ ! -e /dev/mapper/proc ]];then
+    echo $LUKS_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode $PHYSICAL_PROC &&
+    echo -n $LUKS_PASSWORD | cryptsetup --batch-mode luksOpen $PHYSICAL_PROC proc 
+    echo "encrypted proc volume"
+fi
+
+
+if [[ ! -e /dev/mapper/data ]];then
+    echo $LUKS_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode $PHYSICAL_DATA &&
+    echo -n $LUKS_PASSWORD | cryptsetup --batch-mode luksOpen $PHYSICAL_DATA data
+    echo "encrypted data volume"
+fi
+
+
+sleep 3 && clear &&
+echo "level 2" &&
+echo "create volume group proc" &&
+if [[ -z $(vgs | grep proc ) ]];then
+    pvcreate /dev/mapper/proc  && vgcreate proc /dev/mapper/proc
+fi
+
+
+sleep 3 && clear &&
+echo "level 3" &&
+if [[ ! -e /dev/proc/root ]];then
+    lvcreate -L 10G proc -n root 
+fi
+yes y | mkfs.ext4 -b 4096 -q /dev/proc/root &&
 mount /dev/proc/root /mnt &&
 
 
-mkfs.vfat -F32 -S 4096 -n BOOT $DISK_BOOOT &&
+sleep 3 && clear &&
+echo "level 4" &&
+yes Y | mkfs.vfat -F32 -S 4096 -n BOOT $PHYSICAL_BOOT &&
 mkdir /mnt/boot &&
-mount -o uid=0,gid=0,fmask=0077,dmask=0077 $DISK_BOOOT /mnt/boot &&
+mount -o uid=0,gid=0,fmask=0077,dmask=0077 $PHYSICAL_BOOT /mnt/boot &&
 
- 
-lvcreate -L 15G proc -n opts &&
-mkfs.ext4 -b 4096 /dev/proc/opts &&
+
+if [[ ! -e /mnt/boot ]];then
+    echo "Error boot partition not found"
+    exit
+fi
+
+
+sleep 3 && clear &&
+echo "level 5" &&
+if [[ ! -e /dev/proc/opts ]];then
+    lvcreate -L 15G proc -n opts
+fi
+
+yes Y | mkfs.ext4 -b 4096 /dev/proc/opts &&
 mkdir /mnt/opt &&
 mount -o rw,nodev,nosuid,relatime /dev/proc/opts /mnt/opt &&
 
 
-lvcreate -L 2G proc -n vars &&
-mkfs.ext4 -b 4096 /dev/proc/vars &&
+sleep 3 && clear &&
+echo "level 6" &&
+if [[ ! -e /dev/proc/vars ]];then
+   lvcreate -L 2G proc -n vars
+fi
+yes Y | mkfs.ext4 -b 4096 /dev/proc/vars &&
 mkdir /mnt/var &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vars /mnt/var &&
 
 
-lvcreate -L 512M proc -n libs &&
-mkfs.ext4 -b 4096 /dev/proc/libs &&
+sleep 3 && clear &&
+echo "level 7" 
+if [[ ! -e /dev/proc/libs ]];then
+    lvcreate -L 512M proc -n libs
+fi
+yes Y | mkfs.ext4 -b 4096 /dev/proc/libs &&
 mkdir /mnt/var/usr &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/libs /mnt/var/usr &&
 
 
-lvcreate -L 512M proc -n game &&
-mkfs.ext4 -b 4096 /dev/proc/game &&
+sleep 3 && clear &&
+echo "level 8" &&
+if [[ ! -e /dev/proc/game ]];then
+    lvcreate -L 512M proc -n game
+fi
+yes Y | mkfs.ext4 -b 4096 /dev/proc/game &&
 mkdir /mnt/var/games &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/game /mnt/var/games &&
 
 
-lvcreate -L 1G proc -n vlog &&
-mkfs.ext4 -b 4096 /dev/proc/vlog &&
+sleep 3 && clear &&
+echo "level 9" &&
+if [[ ! -e /dev/proc/vlog ]];then
+    lvcreate -L 1G proc -n vlog
+fi
+yes Y | mkfs.ext4 -b 4096 /dev/proc/vlog &&
 mkdir /mnt/var/log &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vlog /mnt/var/log &&
 
 
-lvcreate -L 256M proc -n vaud &&
-mkfs.ext4 -b 4096 /dev/proc/vaud &&
+sleep 3 &&
+clear &&
+echo "level 10" &&
+if [[ ! -e /dev/proc/vaud ]];then
+    lvcreate -L 256M proc -n vaud
+fi
+yes Y | mkfs.ext4 -b 4096 /dev/proc/vaud &&
 mkdir /mnt/var/log/audit &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vaud /mnt/var/log/audit &&
 
 
-lvcreate -L 2G proc -n vtmp &&
-mkfs.ext4 -b 4096 /dev/proc/vtmp &&
+sleep 3 &&
+clear &&
+echo "level 11" &&
+if [[ ! -e /dev/proc/vtmp ]];then
+    lvcreate -L 2G proc -n vtmp
+fi
+yes Y | mkfs.ext4 -b 4096 /dev/proc/vtmp &&
 mkdir /mnt/var/tmp &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vtmp /mnt/var/tmp &&
 
 
-lvcreate -L 2G proc -n vpac &&
-mkfs.ext4 -b 4096 /dev/proc/vpac &&
+sleep 3 && clear &&
+echo "level 12" &&
+if [[ ! -e /dev/proc/vpac ]];then
+    lvcreate -L 2G proc -n vpac
+fi
+yes Y | mkfs.ext4 -b 4096 /dev/proc/vpac &&
 mkdir -p /mnt/var/cache/pacman &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/vpac /mnt/var/cache/pacman &&
 
 
-lvcreate -L 512M proc -n ring &&
-cryptsetup luksFormat --sector-size=4096 /dev/proc/ring &&
-cryptsetup luksOpen /dev/proc/ring proc_keys &&
-mkfs.ext4 -b 4096 /dev/mapper/proc_keys &&
+sleep 3 && clear &&
+echo "level 13" &&
+if [[ ! -e /dev/proc/ring ]];then
+    lvcreate -L 512M proc -n ring
+fi
+echo "encrypt ring directory"
+echo $RING_PASSWORD | cryptsetup luksFormat --type luks2 --sector-size 4096 --batch-mode /dev/proc/ring &&
+echo "open ring directory"
+echo -n $RING_PASSWORD | cryptsetup --batch-mode luksOpen /dev/proc/ring lvm_keys &&
+mkfs.ext4 -b 4096 /dev/mapper/lvm_keys
 
 
-lvcreate -l100%FREE proc -n docs &&
+sleep 3 && clear &&
+echo "level 14" &&
+if [[ ! -e /dev/proc/docs ]];then
+    lvcreate -l100%FREE proc -n docs
+fi
 mkfs.ext4 -b 4096 /dev/proc/docs &&
 mkdir -p /mnt/srv /mnt/srv/http &&
 mount -o rw,nodev,noexec,nosuid,relatime /dev/proc/docs /mnt/srv/http &&
 
 
+## network
+sleep 3 && clear &&
+echo "level 15" &&
+pacstrap /mnt openssh ethtool iptables-nft firewalld --noconfirm  &&
 
-## app level 1
-pacstrap /mnt linux-hardened linux-firmware mkinitcpio base lvm2 btrfs-progs bubblewrap-suid --noconfirm &&
-
-
-## app level 2
-pacstrap /mnt sudo debugedit fakeroot pkgconf bison gcc pcre flex wget make gcc curl --noconfirm &&
-
-
-## app level 3
-pacstrap /mnt uwsm hyprland hyprpicker hyprshot hypridle hyprlock hyprpolkitagent xdg-desktop-portal-hyprland qt5-wayland qt6-wayland wl-clipboard cliphist mailcap brightnessctl --noconfirm &&
-
-
-## app level 4
-pacstrap /mnt mako waybar wofi mpd mpc --noconfirm &&
-
-
-## app level 5
-pacstrap /mnt pipewire pipewire-pulse pipewire-jack wireplumber pavucontrol sof-firmware --noconfirm &&
-
-
-## app level 6
-pacstrap /mnt nautilus nautilus-image-converter sushi --noconfirm &&
-
-
-## app level 7
-pacstrap /mnt ttf-jetbrains-mono-nerd ttf-droid --noconfirm &&
-
-
-## app level 8
-pacstrap /mnt kitty kitty-terminfo neovim --noconfirm &&
- 
-
-## app level 9
-pacstrap /mnt gnome-keyring libsecret libpam-google-authenticator libpwquality cracklib polkit apparmor qrencode --noconfirm &&
-
-
-## app level 10
-pacstrap /mnt prometheus prometheus-node-exporter --noconfirm &&
-
-
-## app level 11
-pacstrap /mnt tang openssh ethtool iptables-nft firewalld --noconfirm &&
-
-
-## app level 12
 if [[ ! -z $( ip a | grep "wl*" )  ]];then
     mkdir -p /mnt/var/lib/iwd/ &&
     pacstrap /mnt iwd --noconfirm &&
-    cp /var/lib/iwd/* /mnt/var/lib/iwd/ &&
-    cp /etc/system/network/* /mnt/etc/systemd/network/
+    cp /var/lib/iwd/* /mnt/var/lib/iwd/
 fi
 
 
-## app level 13
-pacstrap /mnt irqbalance tuned tuned-ppd --noconfirm &&
-
-
-## app level 14
-pacstrap /mnt rsync grsync btop less --noconfirm &&
-
-
-## app level 14
-pacstrap /mnt go hugo nginx git --noconfirm &&
-
-
-## app level 15
+## ucode
+sleep 3 && clear &&
+echo "level 31" &&
 if [[ ! -z $( cat /proc/cpuinfo | grep "Intel" )  ]];then
     pacstrap /mnt intel-ucode --noconfirm
 fi
-
 if [[ ! -z $( cat /proc/cpuinfo | grep "AMD" )  ]];then
     pacstrap /mnt amd-ucode --noconfirm
 fi
 
+## based
+sleep 3 && clear &&
+echo "level 16" &&
+pacstrap /mnt linux-hardened linux-firmware mkinitcpio base lvm2 btrfs-progs bubblewrap-suid \
+    sudo debugedit fakeroot pkgconf bison gcc pcre flex wget make gcc curl less git \
+    pipewire pipewire-pulse pipewire-jack wireplumber pavucontrol sof-firmware mpd mpc \
+    brightnessctl xorg-xwayland uwsm libnewt \
+    ttf-jetbrains-mono-nerd ttf-droid \
+    hyprland hyprpicker hyprshot hypridle hyprlock hyprpolkitagent xdg-desktop-portal-hyprland qt5-wayland qt6-wayland wl-clipboard cliphist mailcap \
+    sddm mako waybar \
+    nautilus nautilus-image-converter sushi \
+    kitty kitty-terminfo neovim \
+    gnome-keyring libsecret libpam-google-authenticator libpwquality cracklib polkit apparmor qrencode \
+    prometheus prometheus-node-exporter btop \
+    irqbalance tuned tuned-ppd \
+    rsync grsync \
+    go hugo nginx \
+    flatpak gnome-software --noconfirm &&
 
-cp -fr /install/post  /mnt/ &&
 
+
+sleep 3 && clear &&
+echo "level 17" &&
+echo "copy post installation script"
+cp -fr post  /mnt/ &&
+
+
+sleep 3 && clear &&
+echo "level 18" &&
+echo "copy post installation script" &&
+if [[ ! -e  /mnt/opt/ ]];then
+    echo "Error /mnt/opt doesnt exist, installation failed" 
+    exit
+fi
+
+git clone https://github.com/blackbird-package/level20.git /mnt/opt/config &&
+cp -fr /mnt/opt/config/base/* /mnt &&
+echo "base configuration done" &&
+cp -fr /mnt/opt/config/sysd/* /mnt &&
+echo "sysd configuration done" &&
+cp $(pwd)/config /mnt/post &&
+echo "temp configuration done" &&
+cp /etc/system/network/* /mnt/etc/systemd/network/  &&
+if [[ -e /mnt/etc/systemd/network/20-ethernet.network ]];then
+    mv  mnt/etc/systemd/network/20-ethernet-bak mnt/etc/systemd/network/20-ethernet.network
+fi
+
+
+sleep 3 && clear &&
+echo "level 19" &&
 genfstab -U /mnt > /mnt/etc/fstab &&
 echo "" >> /mnt/etc/fstab &&
 echo "# /dev/mapper/proc-temp" >> /mnt/etc/fstab &&
 echo "tmpfs     					/tmp        		tmpfs   defaults,rw,nosuid,nodev,noexec,relatime,size=256M" >>  /mnt/etc/fstab &&
 
 
-arch-chroot /mnt
+sleep 3 && clear &&
+echo "level 20" &&
+arch-chroot /mnt /bin/bash /post/systemd-post-install
