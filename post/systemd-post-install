@@ -172,6 +172,7 @@ systemctl enable --global gcr-ssh-agent.socket &&
 systemctl enable --global hypridle.service &&
 systemctl enable --global hyprpolkitagent &&
 systemctl enable --global waybar &&
+systemctl disable systemd-networkd-wait-online.service &&
 systemctl enable --global pipewire-pulse &&
 
 ## finishing
