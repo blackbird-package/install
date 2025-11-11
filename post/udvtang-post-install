@@ -181,6 +181,7 @@ systemctl enable update.timer &&
 systemctl enable prometheus.service &&
 systemctl enable prometheus-node-exporter.service &&
 systemctl enable irqbalance &&
+systemctl enable upower.service &&
 systemctl enable seatd &&
 systemctl enable nginx &&
 systemctl enable systemd-networkd &&
