@@ -183,7 +183,7 @@ pacstrap /mnt openssh ethtool iptables-nft firewalld --noconfirm  &&
 
 if [[ ! -z $( ip a | grep "wl*" )  ]];then
     mkdir -p /mnt/var/lib/iwd/ &&
-    pacstrap /mnt iwd --noconfirm &&
+    pacstrap /mnt iwd impala --noconfirm &&
     cp /var/lib/iwd/* /mnt/var/lib/iwd/
 fi
 
